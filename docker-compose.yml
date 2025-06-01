@@ -1,0 +1,33 @@
+services:
+  youtube-mcp:
+    build: .
+    container_name: youtube-mcp-server
+    ports:
+      - "8080:8080"  # HTTP MCP server and file server
+    volumes:
+      - ./cache:/app/cache  # Persistent cache
+      - /tmp/youtube-mcp:/tmp/youtube-mcp  # Temporary files
+    environment:
+      - CACHE_DIR=/app/cache
+      - TEMP_DIR=/tmp/youtube-mcp
+      - BASE_URL=${BASE_URL:-http://localhost:8080}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
+      - ASSEMBLYAI_API_KEY=${ASSEMBLYAI_API_KEY:-}
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - mcp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  mcp-network:
+    driver: bridge
+
+volumes:
+  cache:
+    driver: local

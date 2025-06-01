@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "youtube": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--network", "host",
+        "-v", "/Users/jason/Projects/youtube-download/cache:/app/cache",
+        "-e", "BASE_URL=http://localhost:8080",
+        "-e", "ASSEMBLYAI_API_KEY=${ASSEMBLYAI_API_KEY}",
+        "-e", "JWT_SECRET=your-secret-key-here",
+        "youtube-download-youtube-mcp"
+      ],
+      "env": {
+        "ASSEMBLYAI_API_KEY": "${ASSEMBLYAI_API_KEY}"
+      }
+    }
+  }
+}

@@ -198,6 +198,7 @@ session.json
 
 # Cache
 .cache/
+cache/
 __pycache__/
 *.pyc
 
@@ -215,11 +216,27 @@ yarn-error.log*
 *.swo
 *~
 
+# MCP Server
+mcp_sessions/
+*.session
+
+# Docker
+*.pid
+docker-compose.override.yml
+
 # Keep these files
 !requirements.txt
 !README.md
+!README_*.md
 !.gitignore
 !youtube_mp3_downloader.py
 !youtube_mp4_downloader.py
 !youtube_combined_downloader.py
 !audio_transcriber.py
+!server.py
+!server_http.py
+!test_mcp_http.py
+!Dockerfile
+!docker-compose.yml
+!mcp_server_config.json
+!.env.example

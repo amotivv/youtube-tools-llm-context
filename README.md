@@ -149,6 +149,83 @@ Powerful transcription tool using AssemblyAI API for converting audio to text.
 - Timestamp preservation for all formats
 - Perfect integration with downloaded YouTube audio
 
+### 5. `server.py` - MCP Server for Claude Desktop
+
+Model Context Protocol server that provides YouTube functionality to AI assistants like Claude.
+
+**How it Works:**
+- Claude Desktop connects to the MCP server via Docker (handles the YouTube operations)
+- A separate HTTP server runs on port 8080 to serve downloaded files
+- When Claude downloads a video/audio, it gives you a link you can open in your browser
+- Both components share the same cache and security tokens
+
+**MCP Tools** (5 available):
+- `youtube_download_video`: Download YouTube videos in MP4 format
+- `youtube_download_audio`: Download audio from YouTube in MP3 format
+- `youtube_transcribe`: Download and transcribe YouTube video audio
+- `youtube_get_info`: Get metadata about a YouTube video
+- `youtube_list_cache`: List all cached YouTube files
+
+**MCP Resources** - Access cached content:
+- `youtube://cache/list`: List all cached files
+- `youtube://cache/audio/{cache_key}`: Access cached audio files
+- `youtube://cache/transcript/{cache_key}`: Access cached transcripts
+
+**MCP Prompts** - Pre-built workflows:
+- `youtube-quick-summary`: Get a quick summary of a YouTube video
+- `youtube-to-notes`: Convert video to structured notes
+- `youtube-extract-quotes`: Extract key quotes from a video
+- `youtube-to-blog`: Transform video into a blog post
+
+**Additional Features:**
+- JWT-based secure file access (tokens expire after 15 minutes)
+- 7-day intelligent caching system
+- Automatic cache cleanup
+
+### MCP Server Setup for Claude Desktop
+
+#### Quick Setup
+1. **Create `.env` file** with your settings:
+   ```bash
+   ASSEMBLYAI_API_KEY=your_api_key_here  # Optional, for transcription
+   BASE_URL=http://localhost:8080
+   JWT_SECRET=your-secret-key-here  # Important: Use the same secret everywhere
+   ```
+
+2. **Build and start the file server**:
+   ```bash
+   docker-compose build
+   docker-compose up -d
+   ```
+   This starts the HTTP server that serves downloaded files on port 8080.
+
+3. **Configure Claude Desktop**:
+   - Copy `mcp_server_config.json` to Claude's configuration directory
+   - Make sure the JWT_SECRET in the config matches your `.env` file
+   - Restart Claude Desktop
+
+#### How It Works Together
+```
+┌─────────────────┐         ┌──────────────────────┐
+│ Claude Desktop  │────────▶│ MCP Server (Docker)  │
+│                 │ MCP     │ Downloads videos     │
+└─────────────────┘         └──────────┬───────────┘
+                                       │
+                                       ▼
+┌─────────────────┐         ┌──────────────────────┐
+│ Your Browser    │◀────────│ HTTP Server (:8080)  │
+│ Download files  │ HTTP    │ Serves files         │
+└─────────────────┘         └──────────────────────┘
+```
+
+#### Using MCP Features in Claude
+- **Download a video**: "Download this YouTube video: [URL]"
+- **List cached files**: "Use the youtube_list_cache tool"
+- **Get a transcript**: "Transcribe this YouTube video: [URL]"
+- **Use workflows**: "Use the youtube-to-blog prompt for [URL]"
+
+Claude will provide download links that open in your browser.
+
 ## 🚀 Usage Examples
 
 ### Basic Usage
